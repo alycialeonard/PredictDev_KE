@@ -33,6 +33,7 @@ onehot_cols_appliance_least = csv_to_list(os.path.join(cols_path, "onehot_cols_a
 onehot_cols_appliance_most = csv_to_list(os.path.join(cols_path, "onehot_cols_appliance_most.csv"), 'onehot_cols_appliance_most')
 onehot_cols_climate = csv_to_list(os.path.join(cols_path, "onehot_cols_climate.csv"), 'onehot_cols_climate')
 onehot_cols_upv = csv_to_list(os.path.join(cols_path, "onehot_cols_upv.csv"), 'onehot_cols_upv')
+onehot_cols_access = csv_to_list(os.path.join(cols_path, "onehot_cols_access.csv"), 'onehot_cols_access')
 
 # Put all these lists of columns in a list to cycle through, with short-names for plotting, in a tuple
 column_groups = [("Annotations", onehot_cols_annotation),
@@ -40,6 +41,7 @@ column_groups = [("Annotations", onehot_cols_annotation),
                  ("Most valuable appliance", onehot_cols_appliance_most),
                  ("Climate UPV items", onehot_cols_climate),
                  ("General UPV items", onehot_cols_upv),
+                 ("Access items", onehot_cols_access)
                  ]
 
 
@@ -55,9 +57,11 @@ demographics = [("Gender", "What is your gender?"),
 
 # Get + plot stratified proportions by different demographics
 for columns in column_groups:
-    # Get proportions across the whole dataset
+    # Get counts across the whole dataset
+    counts = df[columns[1]].sum().sort_values(ascending=False)
+    counts.to_csv(os.path.join(csv_save_path, f"{columns[0]}_Counts.csv"))
+    # Get proportions across the whole dataset & save
     proportions = df[columns[1]].mean().sort_values(ascending=False)
-    # Save the results
     proportions.to_csv(os.path.join(csv_save_path, f"{columns[0]}_Prevalence.csv"))
     # Plot the top 10
     top10 = proportions.head(10)
@@ -69,9 +73,11 @@ for columns in column_groups:
     plt.savefig(os.path.join(plots_save_path, f"{columns[0]}_Prevalence.png"), bbox_inches='tight')
     plt.close(fig)
     for demographic in demographics:
-        # Get proportions by demographics
+        # Get counts within the demographic & save
+        stratified_counts = df.groupby(demographic[1])[columns[1]].sum()
+        stratified_counts.to_csv(os.path.join(csv_save_path, f"{columns[0]}_Counts_{demographic[0]}.csv"))
+        # Get proportions by demographics & save
         stratified_proportions = df.groupby(demographic[1])[columns[1]].mean()
-        # Save the results
         stratified_proportions.to_csv(os.path.join(csv_save_path, f"{columns[0]}_Prevalence_{demographic[0]}.csv"))
         # Plot the top 10
         stratified_top10 = stratified_proportions[top10_cols]

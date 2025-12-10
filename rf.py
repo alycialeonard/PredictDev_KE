@@ -65,8 +65,8 @@ def run_rf_experiment(target, target_short, stems_to_drop, clf, clf_short, param
     # ------------ LOAD DATA ------------ #
     print("Experiment execution:\nLoading data...")
     data_path = os.path.join(cwd, 'data')
-    df = pd.read_csv(os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols.csv"), low_memory=False)
-    print(f"Data loaded from {os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols.csv")}!")
+    df = pd.read_csv(os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols_2.csv"), low_memory=False)
+    print(f"Data loaded from {os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols_2.csv")}!")
     num_cols = csv_to_list(os.path.join(data_path, "cols", "numeric_cols.csv"), 'numeric_cols')
 
     # --------- PREPARE DATA ------------- #
@@ -242,15 +242,24 @@ def run_rf_experiment(target, target_short, stems_to_drop, clf, clf_short, param
 def main():
 
     # Define target for prediction.
-    tar = 'Which 5 items are most important to you in your daily life? Please indicate these in order of importance, starting with the most important_Electricity'
+    tar = 'Have electricity and value it'
 
     # Define short-form of target to use in file saving
-    tar_short = 'UPV_Electricity'
+    tar_short = 'specific_electricityaccess1value1'
 
     # Define questions to drop from predictors
     to_drop = ['Which of the following items do you have access to in your daily life?',
                'Which 5 items are most important to you in your daily life? Please indicate these in order of importance, starting with the most important',
-               'Given the chosen climate event - which 3 items are most useful to you?']
+               'Given the chosen climate event - which 3 items are most useful to you?',
+               'annotation_',
+               'What is the main source of electricity in your home?',
+               'What is the electricity used for?',
+               'Do you use electricity for your business?',
+               'What do you use electricity for in your business?',
+               'What is the main source of lighting?',
+               'Have electricity and do not value it',
+               'No electricity access but still values it'
+               ]
 
     # Define classifier
     clf = RandomForestClassifier(random_state=42)

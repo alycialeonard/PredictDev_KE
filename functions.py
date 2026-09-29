@@ -212,10 +212,14 @@ def plot_confusion_matrix_norm(model, X_test, y_test, save_path):
     cm_index = np.unique(y_test)
     cm_norm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cm_norm, annot=True, fmt='.2f', xticklabels=cm_index, yticklabels=cm_index, cmap='Blues')
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion matrix (normalsed by true row)')
+    ax = sns.heatmap(cm_norm, annot=True, fmt='.2f', xticklabels=cm_index, yticklabels=cm_index, cmap='Blues',
+                     vmin=0, vmax=1, annot_kws={'size': 16})
+    plt.xlabel('Predicted', fontsize=16)
+    plt.ylabel('True', fontsize=16)
+    #plt.title('Confusion matrix (normalised by true row)', fontsize=16)
+    ax.tick_params(labelsize=16)
+    cbar = ax.collections[0].colorbar
+    cbar.ax.tick_params(labelsize=16)
     plt.tight_layout()
     plt.savefig(save_path, bbox_inches='tight')
     plt.close()

@@ -65,8 +65,8 @@ def run_rf_experiment(target, target_short, stems_to_drop, clf, clf_short, param
     # ------------ LOAD DATA ------------ #
     print("Experiment execution:\nLoading data...")
     data_path = os.path.join(cwd, 'data')
-    df = pd.read_csv(os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols_2.csv"), low_memory=False)
-    print(f"Data loaded from {os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols_2.csv")}!")
+    df = pd.read_csv(os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols.csv"), low_memory=False)
+    print(f"Data loaded from {os.path.join(data_path, "Kenya_UPV_Survey_Preprocessed_EncodedCols.csv")}!")
     num_cols = csv_to_list(os.path.join(data_path, "cols", "numeric_cols.csv"), 'numeric_cols')
 
     # --------- PREPARE DATA ------------- #
@@ -230,6 +230,13 @@ def run_rf_experiment(target, target_short, stems_to_drop, clf, clf_short, param
     plt.savefig(os.path.join(plots_save_path, "SHAP_summary_dot.png"), bbox_inches='tight')
     plt.close()
     print(f"SHAP summary plot saved to {os.path.join(plots_save_path, "SHAP_summary_dot.png")}!")
+    # Plot mean bar plot
+    plt.figure(figsize=(10, 6))
+    shap.summary_plot(shap_for_plot, X_shap, plot_type="bar", max_display=20, show=False)
+    plt.title(f"SHAP Summary (positive class)")
+    plt.savefig(os.path.join(plots_save_path, "SHAP_summary_bar.png"), bbox_inches='tight')
+    plt.close()
+    print(f"SHAP bar plot saved to {os.path.join(plots_save_path, "SHAP_summary_bar.png")}!")
 
     # ------- STOP LOGGING ------- #
     sys.stdout = sys.__stdout__
@@ -242,10 +249,10 @@ def run_rf_experiment(target, target_short, stems_to_drop, clf, clf_short, param
 def main():
 
     # Define target for prediction.
-    tar = 'Have electricity and value it'
+    tar = 'Which of the following items do you have access to in your daily life?_Electricity'
 
     # Define short-form of target to use in file saving
-    tar_short = 'specific_electricityaccess1value1'
+    tar_short = 'Access_Electricity'
 
     # Define questions to drop from predictors
     to_drop = ['Which of the following items do you have access to in your daily life?',
@@ -257,8 +264,10 @@ def main():
                'Do you use electricity for your business?',
                'What do you use electricity for in your business?',
                'What is the main source of lighting?',
-               'Have electricity and do not value it',
-               'No electricity access but still values it'
+               'Solar (private)',
+               'How often do you watch TV?'
+               #'Have electricity and do not value it',
+               #'No electricity access but still values it'
                ]
 
     # Define classifier
